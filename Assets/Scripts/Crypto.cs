@@ -13,6 +13,8 @@ public static class Crypto {
 	public static string strKey { get { return (Aes == null) ? null : Encoding.UTF8.GetString (Aes.Key); } }
 	public static byte [] IV { get { return (Aes == null) ? null : Aes.IV; } }
 	public static byte [] Key { get { return (Aes == null) ? null : Aes.Key; } }
+	private static ICryptoTransform encryptor;
+	private static ICryptoTransform decryptor;
 
 	public static bool Init (byte [] iv = null, byte [] key = null) {
 		if (Aes != null) {
@@ -35,6 +37,10 @@ public static class Crypto {
 				}
 				Aes.Key = key;
 			}
+			if (encryptor != null) { encryptor.Dispose (); }
+			encryptor = Aes.CreateEncryptor ();
+			if (decryptor != null) { decryptor.Dispose (); }
+			decryptor = Aes.CreateDecryptor ();
 			return true;
 		}
 		return false;
@@ -45,25 +51,42 @@ public static class Crypto {
 	}
 
 	public static string Encrypt (string src) {
-		if (Aes == null) { return null; }
-		using (ICryptoTransform encrypt = Aes.CreateEncryptor ()) {
+		if (Aes == null || string.IsNullOrEmpty (src)) { return null; }
+		try {
 			var data = Encoding.UTF8.GetBytes (src);
-			return Convert.ToBase64String (encrypt.TransformFinalBlock (data, 0, data.Length));
+			return Convert.ToBase64String (encryptor.TransformFinalBlock (data, 0, data.Length));
+		} catch {
+			return null;
+		}
+	}
+
+	public static byte [] Encrypt (byte [] data) {
+		if (Aes == null || data == null) { return null; }
+		try {
+			return encryptor.TransformFinalBlock (data, 0, data.Length);
+		}
+		catch {
+			return null;
 		}
 	}
 
 	public static string Decrypt (string src) {
-		if (Aes == null) { return null; }
-		using (ICryptoTransform decrypt = Aes.CreateDecryptor ()) {
-			string value;
-			try {
-				var data = Convert.FromBase64String (src);
-				value = Encoding.UTF8.GetString (decrypt.TransformFinalBlock (data, 0, data.Length));
-			}
-			catch {
-				value = null;
-			}
-			return value;
+		if (Aes == null || string.IsNullOrEmpty (src)) { return null; }
+		try {
+			var data = Convert.FromBase64String (src);
+			return Encoding.UTF8.GetString (decryptor.TransformFinalBlock (data, 0, data.Length));
+		}
+		catch {
+			return null;
+		}
+	}
+
+	public static byte [] Decrypt (byte [] data) {
+		if (Aes == null || data == null) { return null; }
+		try {
+			return decryptor.TransformFinalBlock (data, 0, data.Length);
+		} catch {
+			return null;
 		}
 	}
 
