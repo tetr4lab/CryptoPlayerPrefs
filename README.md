@@ -9,6 +9,7 @@ tags: Unity C#
 # できること
 - 標準のPlayerPrefsを置き換える形で、セーブデータの暗号化ができます。
 - PlayerPrefsを継承するので、クラス名を付け替えるだけで置き換えが完了します。
+- 拡張された`GetObject ()`と`SetObject ()`が使えます。
 
 # 導入
 - 最小限必要なアセットは、`Crypto.cs`と`CryptoPlayerPrefs.cs`です。
