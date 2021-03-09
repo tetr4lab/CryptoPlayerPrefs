@@ -8,8 +8,8 @@ using System.Security.Cryptography;
 public static class Crypto {
 
 	private static AesCryptoServiceProvider Aes;
-	public static bool Inited { get { return Aes != null; } }
-	public static byte [] Key { get { return (Aes == null) ? null : Aes.Key; } }
+	public static bool Inited => Aes != null;
+	public static byte [] Key => (Aes == null) ? null : Aes.Key;
 	private static ICryptoTransform encryptor;
 	private static ICryptoTransform decryptor;
 
@@ -57,8 +57,7 @@ public static class Crypto {
 		try {
 			Aes.GenerateIV ();
 			return encryptor.TransformFinalBlock (data, 0, data.Length);
-		}
-		catch {
+		} catch {
 			return null;
 		}
 	}
@@ -68,8 +67,7 @@ public static class Crypto {
 		try {
 			var data = Convert.FromBase64String (src);
 			return Encoding.UTF8.GetString (decryptor.TransformFinalBlock (data, 0, data.Length));
-		}
-		catch {
+		} catch {
 			return null;
 		}
 	}
