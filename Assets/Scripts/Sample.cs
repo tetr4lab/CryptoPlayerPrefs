@@ -15,15 +15,8 @@ public class Sample : MonoBehaviour {
 	void Start () {
 
 #if INIT_CRYPTO
-		Crypto.Init ("#:CP$-/Tk:d5-exf", "H:CNA+3ZaLLUJwpPcHC@2dV3XfhrUGN-");
+		Crypto.Init ("H:CNA+3ZaLLUJwpPcHC@2dV3XfhrUGN-");
 #endif
-		// ロード
-		Number = CryptoPlayerPrefs.GetInt ("Number");
-		Value = CryptoPlayerPrefs.GetFloat ("Value");
-		Name = CryptoPlayerPrefs.GetString ("Name");
-		Items = CryptoPlayerPrefs.GetObject<ItemDict> ("Items");
-		Debug.Log ($"loaded... Number = {Number}, Value = {Value}, Name = {Name}, Items = {Items}");
-		
 		// 初期化
 		Number = 4096;
 		Value = 1.41421356f;
@@ -36,6 +29,20 @@ public class Sample : MonoBehaviour {
 		CryptoPlayerPrefs.SetString ("Name", Name);
 		CryptoPlayerPrefs.SetObject<ItemDict> ("Items", Items);
 		Debug.Log ($"saved... Number = {Number}, Value = {Value}, Name = {Name}, Items = {Items}");
+
+		// 非解読ロード
+		Number = PlayerPrefs.GetInt ("Number");
+		Value = PlayerPrefs.GetFloat ("Value");
+		Name = PlayerPrefs.GetString ("Name");
+		var items = PlayerPrefs.GetString ("Items");
+		Debug.Log ($"loaded... Number = {Number}, Value = {Value}, Name = {Name}, Items = {items}");
+
+		// ロード
+		Number = CryptoPlayerPrefs.GetInt ("Number");
+		Value = CryptoPlayerPrefs.GetFloat ("Value");
+		Name = CryptoPlayerPrefs.GetString ("Name");
+		Items = CryptoPlayerPrefs.GetObject<ItemDict> ("Items");
+		Debug.Log ($"loaded... Number = {Number}, Value = {Value}, Name = {Name}, Items = {Items}");
 	}
 
 }

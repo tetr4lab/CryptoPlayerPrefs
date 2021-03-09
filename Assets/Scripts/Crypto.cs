@@ -9,14 +9,11 @@ public static class Crypto {
 
 	private static AesCryptoServiceProvider Aes;
 	public static bool Inited { get { return Aes != null; } }
-	public static string strIV { get { return (Aes == null) ? null : Encoding.UTF8.GetString (Aes.IV); } }
-	public static string strKey { get { return (Aes == null) ? null : Encoding.UTF8.GetString (Aes.Key); } }
-	public static byte [] IV { get { return (Aes == null) ? null : Aes.IV; } }
 	public static byte [] Key { get { return (Aes == null) ? null : Aes.Key; } }
 	private static ICryptoTransform encryptor;
 	private static ICryptoTransform decryptor;
 
-	public static bool Init (byte [] iv = null, byte [] key = null) {
+	public static bool Init (byte [] key = null) {
 		if (Aes != null) {
 			Aes.Dispose ();
 			Aes = null;
@@ -25,12 +22,6 @@ public static class Crypto {
 			Aes = aes;
 		}
 		if (Aes != null) {
-			if (iv != null) {
-				if (iv.Length * 8 != Aes.BlockSize) {
-					throw new ArgumentOutOfRangeException ("invalid size of iv");
-				}
-				Aes.IV = iv;
-			}
 			if (key != null) {
 				if (key.Length * 8 != Aes.KeySize) {
 					throw new ArgumentOutOfRangeException ("invalid size of key");
@@ -46,13 +37,14 @@ public static class Crypto {
 		return false;
 	}
 
-	public static void Init (string iv, string key) {
-		Init ((iv == null) ? null : Encoding.UTF8.GetBytes (iv), (key == null) ? null : Encoding.UTF8.GetBytes (key));
+	public static void Init (string key) {
+		Init ((key == null) ? null : Encoding.UTF8.GetBytes (key));
 	}
 
 	public static string Encrypt (string src) {
 		if (Aes == null || string.IsNullOrEmpty (src)) { return null; }
 		try {
+			Aes.GenerateIV ();
 			var data = Encoding.UTF8.GetBytes (src);
 			return Convert.ToBase64String (encryptor.TransformFinalBlock (data, 0, data.Length));
 		} catch {
@@ -63,6 +55,7 @@ public static class Crypto {
 	public static byte [] Encrypt (byte [] data) {
 		if (Aes == null || data == null) { return null; }
 		try {
+			Aes.GenerateIV ();
 			return encryptor.TransformFinalBlock (data, 0, data.Length);
 		}
 		catch {
