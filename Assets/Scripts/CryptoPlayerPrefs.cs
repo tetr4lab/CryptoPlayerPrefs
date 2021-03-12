@@ -13,7 +13,7 @@ public class CryptoPlayerPrefs : PlayerPrefs {
 
 	public static T GetObject<T> (string key) {
 		if (string.IsNullOrEmpty (key) || !HasKey (key)) { return default (T); }
-#if UNITY_IOS
+#if UNITY_IPHONE
         Environment.SetEnvironmentVariable("MONO_REFLECTION_SERIALIZER", "yes");
 #endif
 #if CRYPTO
@@ -27,7 +27,7 @@ public class CryptoPlayerPrefs : PlayerPrefs {
 
 	public static void SetObject<T> (string key, T obj) {
 		if (obj == null) { return; }
-#if UNITY_IOS
+#if UNITY_IPHONE
         Environment.SetEnvironmentVariable("MONO_REFLECTION_SERIALIZER", "yes");
 #endif
 		using (var stream = new MemoryStream ()) {
