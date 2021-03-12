@@ -44,6 +44,7 @@ public class CryptoPlayerPrefs : PlayerPrefs {
 
 #if CRYPTO
 #if AUTO_INIT
+	private const string ivPrefskey = "CryptoPlayerPrefsIV";
 	private const string keyPrefskey = "CryptoPlayerPrefsKey";
 
 	private static byte [] scramble (byte [] data) {
@@ -56,11 +57,13 @@ public class CryptoPlayerPrefs : PlayerPrefs {
 
 	static CryptoPlayerPrefs () {
 		if (!Crypto.Inited) {
-			if (HasKey (keyPrefskey)) {
+			if (HasKey (ivPrefskey) && HasKey (keyPrefskey)) {
 				Crypto.Init (
+					scramble (Convert.FromBase64String (PlayerPrefs.GetString (ivPrefskey))), 
 					scramble (Convert.FromBase64String (PlayerPrefs.GetString (keyPrefskey)))
 				);
 			} else if (Crypto.Init ()) {
+				PlayerPrefs.SetString (ivPrefskey, Convert.ToBase64String (scramble (Crypto.IV)));
 				PlayerPrefs.SetString (keyPrefskey, Convert.ToBase64String (scramble (Crypto.Key)));
 			}
 		}

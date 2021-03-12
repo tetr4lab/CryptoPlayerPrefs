@@ -1,45 +1,38 @@
-# CryptoPlayerPrefs / ŠÈˆÕ‚ÈƒZ[ƒuƒf[ƒ^‚ÌˆÃ†‰»
+# CryptoPlayerPrefs / ç°¡æ˜“ãªã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿ã®æš—å·åŒ–
 Encryption of unity save data  
 tags: Unity C#
 
-# ‘O’ñ
-- unity 2018.4.1f1A2018.4.32f1
+# å‰æ
+- unity 2018.4.1f1
 - `System.Security.Cryptography` BlockSize 128bit, KeySize 256bit, Mode CBC, Padding PKCS7
 
-# ‚Å‚«‚é‚±‚Æ
-- •W€‚ÌPlayerPrefs‚ð’u‚«Š·‚¦‚éŒ`‚ÅAƒZ[ƒuƒf[ƒ^‚ÌˆÃ†‰»‚ª‚Å‚«‚Ü‚·B
-- PlayerPrefs‚ðŒp³‚·‚é‚Ì‚ÅAƒNƒ‰ƒX–¼‚ð•t‚¯‘Ö‚¦‚é‚¾‚¯‚Å’u‚«Š·‚¦‚ªŠ®—¹‚µ‚Ü‚·B
-- Šg’£‚³‚ê‚½`GetObject ()`‚Æ`SetObject ()`‚ªŽg‚¦‚Ü‚·B
+# ã§ãã‚‹ã“ã¨
+- æ¨™æº–ã®PlayerPrefsã‚’ç½®ãæ›ãˆã‚‹å½¢ã§ã€ã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿ã®æš—å·åŒ–ãŒã§ãã¾ã™ã€‚
+- PlayerPrefsã‚’ç¶™æ‰¿ã™ã‚‹ã®ã§ã€ã‚¯ãƒ©ã‚¹åã‚’ä»˜ã‘æ›¿ãˆã‚‹ã ã‘ã§ç½®ãæ›ãˆãŒå®Œäº†ã—ã¾ã™ã€‚
+- æ‹¡å¼µã•ã‚ŒãŸ`GetObject ()`ã¨`SetObject ()`ãŒä½¿ãˆã¾ã™ã€‚
 
-# ƒAƒZƒbƒg‚Ì“üŽè (GitHub)
-ƒ_ƒEƒ“ƒ[ƒh Ë [CryptoPlayerPrefs.unitypackage](https://github.com/tetr4lab/CryptoPlayerPrefs/raw/master/CryptoPlayerPreffs.unitypackage)
-[ƒ\[ƒX‚Í‚±‚¿‚ç‚Å‚·B](https://github.com/tetr4lab/CryptoPlayerPrefs)
+# å°Žå…¥
+- æœ€å°é™å¿…è¦ãªã‚¢ã‚»ãƒƒãƒˆã¯ã€`Crypto.cs`ã¨`CryptoPlayerPrefs.cs`ã§ã™ã€‚
+- `Sample.cs`ã¯ä½¿ç”¨ä¾‹ã§ã™ã€‚ã‚·ãƒ¼ãƒ³`SampleScene`ã§æŒ™å‹•ã‚’ç¢ºèªã§ãã¾ã™ã€‚
 
-# “±“ü
-- Å¬ŒÀ•K—v‚ÈƒAƒZƒbƒg‚ÍA`Crypto.cs`‚Æ`CryptoPlayerPrefs.cs`‚Å‚·B
-- `Sample.cs`‚ÍŽg—p—á‚Å‚·BƒV[ƒ“`SampleScene`‚Å‹““®‚ðŠm”F‚Å‚«‚Ü‚·B
+# ç°¡å˜ãªä½¿ã„æ–¹
+- `PlayerPrefs`ã®ä»£ã‚ã‚Šã«`CryptoPlayerPrefs`ã‚’ä½¿ç”¨ã—ã¾ã™ã€‚
+    - ã‚¯ãƒ©ã‚¹åãŒç•°ãªã‚‹ä»¥å¤–ã¯åŒã˜ä½¿ã„æ–¹ã§ã™ã€‚
+- ã“ã‚Œã¯ã€`Sample.cs`ã§å†’é ­ã®`#define INIT_CRYPTO`ã‚’ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã—ãŸçŠ¶æ…‹ã§ã™ã€‚
+- æš—å·éµã¯è‡ªå‹•ç”Ÿæˆã•ã‚Œã€ç°¡æ˜“ãªã‚¹ã‚¯ãƒ©ãƒ³ãƒ–ãƒ«ã‚’æ–½ã•ã‚Œã¦PlayerPrefsã«ä¿å­˜ã•ã‚Œã¾ã™ã€‚
+- `CryptoPlayerPrefs.scramble`ãƒ¡ã‚½ãƒƒãƒ‰ã‚’ç‹¬è‡ªã®ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã«å¤‰æ›´ã™ã‚‹ã“ã¨ã§ã€ã‚ˆã‚Šå®‰å…¨ã«ç®¡ç†ã§ãã¾ã™ã€‚
 
-# ŠÈ’P‚ÈŽg‚¢•û
-- `PlayerPrefs`‚Ì‘ã‚í‚è‚É`CryptoPlayerPrefs`‚ðŽg—p‚µ‚Ü‚·B
-    - ƒNƒ‰ƒX–¼‚ªˆÙ‚È‚éˆÈŠO‚Í“¯‚¶Žg‚¢•û‚Å‚·B
-- ‚±‚ê‚ÍA`Sample.cs`‚Å–`“ª‚Ì`#define INIT_CRYPTO`‚ðƒRƒƒ“ƒgƒAƒEƒg‚µ‚½ó‘Ô‚Å‚·B
-- Œ®‚ÍŽ©“®¶¬‚³‚êAŠÈˆÕ‚ÈƒXƒNƒ‰ƒ“ƒuƒ‹‚ðŽ{‚³‚ê‚ÄPlayerPrefs‚É•Û‘¶‚³‚ê‚Ü‚·B
-- `CryptoPlayerPrefs.scramble`ƒƒ\ƒbƒh‚ð“ÆŽ©‚ÌƒAƒ‹ƒSƒŠƒYƒ€‚É•ÏX‚·‚é‚±‚Æ‚ÅA‚æ‚èˆÀ‘S‚ÉŠÇ—‚Å‚«‚Ü‚·B
-- `GetObject ()`A`SetObject ()`‚ðŽg‚¤‘ÎÛ‚É‚ÍA`[Serializable]`ƒAƒgƒŠƒrƒ…[ƒg‚ÌŽw’è‚ª•K—v‚Å‚·B
-    - ‹ï‘Ì“I‚É‚ÍA"Sample.cs"‚ðŽQÆ‚µ‚Ä‚­‚¾‚³‚¢B
-    - ‚±‚ÌƒZ[ƒuƒf[ƒ^‚ÍA.NET‚Ìƒo[ƒWƒ‡ƒ“‚ÉˆË‘¶‚µ‚Ä‚¨‚èAˆÙ‚È‚éƒo[ƒWƒ‡ƒ“ŠÔ‚Å‚ÍŒÝŠ·«‚ª•ÛØ‚³‚ê‚Ü‚¹‚ñB
-
-# Œ®‚ðŽ©•ª‚ÅŠÇ—‚·‚é
-- “ÆŽ©‚ÌŒ®‚ðÝ’è‚µ‚Ä‚©‚çA`CryptoPlayerPrefs`‚ðŽg—p‚·‚é‚±‚Æ‚à‰Â”\‚Å‚·B
-    - `Crypto.Init ("[32•¶Žš]");`
-    - ‚Ü‚½‚ÍA`Crypto.Init (byte [32]);`
-- `Sample.cs`‚ÌŽg‚¢•û‚¾‚ÆAŒ®‚ÍƒR[ƒh’†‚É•½•¶‚ÅŠi”[‚³‚ê‚Ä‚¢‚Ü‚·‚ªA‰æ‘œƒf[ƒ^‚Ìˆê•”‚ðŽg—p‚·‚é‚È‚ÇA‚æ‚èƒgƒŠƒbƒL[‚È•û–@‚àl‚¦‚ç‚ê‚Ü‚·B
-- Œ®‚ðŽ©•ª‚ÅŠÇ—‚·‚éê‡‚ÍA`CryptoPlayerPrefs.cs`–`“ª‚Ì`#define AUTO_INIT`‚ðƒRƒƒ“ƒgƒAƒEƒg‚·‚é‚±‚Æ‚ÅAŽ©“®‰Šú‰»‚ÌƒR[ƒh‚ðíŒ¸‚Å‚«‚Ü‚·B
+# æš—å·éµã‚’è‡ªåˆ†ã§ç®¡ç†ã™ã‚‹
+- ç‹¬è‡ªã®æš—å·éµã‚’è¨­å®šã—ã¦ã‹ã‚‰ã€`CryptoPlayerPrefs`ã‚’ä½¿ç”¨ã™ã‚‹ã“ã¨ã‚‚å¯èƒ½ã§ã™ã€‚
+    - `Crypto.Init ("[16æ–‡å­—]", "[32æ–‡å­—]");`
+    - ã¾ãŸã¯ã€`Crypto.Init (byte [16], byte [32]);`
+- `Sample.cs`ã®ä½¿ã„æ–¹ã ã¨ã€æš—å·éµã¯ã‚³ãƒ¼ãƒ‰ä¸­ã«å¹³æ–‡ã§æ ¼ç´ã•ã‚Œã¦ã„ã¾ã™ãŒã€ç”»åƒãƒ‡ãƒ¼ã‚¿ã®ä¸€éƒ¨ã‚’ä½¿ç”¨ã™ã‚‹ãªã©ã€ã‚ˆã‚Šãƒˆãƒªãƒƒã‚­ãƒ¼ãªæ–¹æ³•ã‚‚è€ƒãˆã‚‰ã‚Œã¾ã™ã€‚
+- éµã‚’è‡ªåˆ†ã§ç®¡ç†ã™ã‚‹å ´åˆã¯ã€`CryptoPlayerPrefs.cs`å†’é ­ã®`#define AUTO_INIT`ã‚’ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã™ã‚‹ã“ã¨ã§ã€è‡ªå‹•åˆæœŸåŒ–ã®ã‚³ãƒ¼ãƒ‰ã‚’å‰Šæ¸›ã§ãã¾ã™ã€‚
  
-# ŠJ”­“r’†‚ÍƒZ[ƒuƒf[ƒ^‚Ì“à—e‚ðŒ©‚½‚¢
-- `CryptoPlayerPrefs.cs`–`“ª‚Ì`#define CRYPTO`‚ðƒRƒƒ“ƒgƒAƒEƒg‚·‚é‚ÆAˆÃ†‰»‚ðs‚¢‚Ü‚¹‚ñB
-    - ‘f‚Ì`PlayerPrefs`‚Ì‹““®‚É‚È‚è‚Ü‚·B
+# é–‹ç™ºé€”ä¸­ã¯ã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿ã®å†…å®¹ã‚’è¦‹ãŸã„
+- `CryptoPlayerPrefs.cs`å†’é ­ã®`#define CRYPTO`ã‚’ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã™ã‚‹ã¨ã€æš—å·åŒ–ã‚’è¡Œã„ã¾ã›ã‚“ã€‚
+    - ç´ ã®`PlayerPrefs`ã®æŒ™å‹•ã«ãªã‚Šã¾ã™ã€‚
 
-### yŽQlz#define G‚é‚Ì–Ê“|‚È‚ñ‚¾‚¯‚Çc
-- ‚±‚¿‚ç‚ð‚¨Š©‚ß‚µ‚Ü‚·B Ë [Unity‚Å‹¤’Ê‚Ìdefine‚ð’è‹`‚·‚éyUnityzyC#z](http://kan-kikuchi.hatenablog.com/entry/ScriptingDefineSymbols)  
-(‚¢‚Â‚à‚ ‚è‚ª‚Æ‚¤‚²‚´‚¢‚Ü‚·B)
+### ã€å‚è€ƒã€‘#define è§¦ã‚‹ã®é¢å€’ãªã‚“ã ã‘ã©â€¦
+- ã“ã¡ã‚‰ã‚’ãŠå‹§ã‚ã—ã¾ã™ã€‚ â‡’ [Unityã§å…±é€šã®defineã‚’å®šç¾©ã™ã‚‹ã€Unityã€‘ã€C#ã€‘](http://kan-kikuchi.hatenablog.com/entry/ScriptingDefineSymbols)  
+(ã„ã¤ã‚‚ã‚ã‚ŠãŒã¨ã†ã”ã–ã„ã¾ã™ã€‚)
