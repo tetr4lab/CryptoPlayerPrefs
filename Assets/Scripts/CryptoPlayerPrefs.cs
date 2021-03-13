@@ -53,12 +53,16 @@ public class CryptoPlayerPrefs : PlayerPrefs {
 
 #if GENERIC_OBJECT_EXTENTION
 
+#if UNITY_IOS
+	/// <summary>初期設定</summary>
+	static CryptoPlayerPrefs () {
+		Environment.SetEnvironmentVariable ("MONO_REFLECTION_SERIALIZER", "yes");
+	}
+#endif
+
 	/// <summary>オブジェクトの取得</summary>
 	public static T GetObject<T> (string key) {
 		if (!HasKey (key)) { return default (T); }
-#if UNITY_IPHONE
-        Environment.SetEnvironmentVariable("MONO_REFLECTION_SERIALIZER", "yes");
-#endif
 #if CRYPTO
 		var str = getStringWithHash (key);
 		using (var stream = new MemoryStream (Crypto.Decrypt (Convert.FromBase64String (str.Substring (Crypto.B64IV_Length)), Convert.FromBase64String (str.Substring (0, Crypto.B64IV_Length))))) {
@@ -72,9 +76,6 @@ public class CryptoPlayerPrefs : PlayerPrefs {
 	/// <summary>オブジェクト保存</summary>
 	public static void SetObject<T> (string key, T obj) {
 		if (obj == null) { return; }
-#if UNITY_IPHONE
-        Environment.SetEnvironmentVariable("MONO_REFLECTION_SERIALIZER", "yes");
-#endif
 		using (var stream = new MemoryStream ()) {
 			(new BinaryFormatter ()).Serialize (stream, obj);
 #if CRYPTO
