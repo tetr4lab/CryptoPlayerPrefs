@@ -22,27 +22,33 @@ public class Sample : MonoBehaviour {
 #endif
 
 		// セーブ用データ
-		var Number = 4096;
-		var Value = 1.41421356f;
-		var Name = "tetr4lab.";
-		var Items = new ItemDict (new string [] { "a", "b", "c", "d", "e", "f" }); // 生成
+		var number = 4096;
+		var value = 1.41421356f;
+		var name = "tetr4lab.";
+		var items = new ItemDict (new string [] { "a", "b", "c", "d", "e", "f" }); // 生成
 
 		// セーブ
-		CryptoPlayerPrefs.SetInt ("Number", Number);
-		CryptoPlayerPrefs.SetFloat ("Value", Value);
-		CryptoPlayerPrefs.SetString ("Name", Name);
-		CryptoPlayerPrefs.SetObject<ItemDict> ("Items", Items);
-		Debug.Log ($"saved... Number = {Number}, Value = {Value}, Name = {Name}, Items = {Items}");
+		CryptoPlayerPrefs.SetInt ("Number", number);
+		CryptoPlayerPrefs.SetFloat ("Value", value);
+		CryptoPlayerPrefs.SetString ("Name", name);
+		CryptoPlayerPrefs.SetObject<ItemDict> ("Items", items);
+		Debug.Log ($"saved... Number = {number}, Value = {value}, Name = {name}, Items = {items}");
 
 		// ここでアプリが終了し、次回起動後に再初期化されたものとする
 		Crypto.Init (Key);
 
 		// ロード
-		Number = CryptoPlayerPrefs.GetInt ("Number");
-		Value = CryptoPlayerPrefs.GetFloat ("Value");
-		Name = CryptoPlayerPrefs.GetString ("Name");
-		Items = CryptoPlayerPrefs.GetObject<ItemDict> ("Items");
-		Debug.Log ($"loaded... Number = {Number}, Value = {Value}, Name = {Name}, Items = {Items}");
+		number = CryptoPlayerPrefs.GetInt ("Number");
+		value = CryptoPlayerPrefs.GetFloat ("Value");
+		name = CryptoPlayerPrefs.GetString ("Name");
+		items = CryptoPlayerPrefs.GetObject<ItemDict> ("Items");
+		Debug.Log ($"loaded... Number = {number}, Value = {value}, Name = {name}, Items = {items}");
+
+		var missingNumber = CryptoPlayerPrefs.GetInt ("MissingNumber");
+		var missingValue = CryptoPlayerPrefs.GetFloat ("MissingValue");
+		var missingName = CryptoPlayerPrefs.GetString ("MissingName");
+		var missingItems = CryptoPlayerPrefs.GetObject<ItemDict> ("MissingItems");
+		Debug.Log ($"missing... Number = {missingNumber}, Value = {missingValue}, Name = {missingName ?? "NULL"}, Items = {missingItems?.ToString () ?? "NULL"}");
 
 	}
 

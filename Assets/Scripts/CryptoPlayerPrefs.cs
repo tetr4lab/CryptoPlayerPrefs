@@ -16,38 +16,24 @@ using UnityEngine;
 public class CryptoPlayerPrefs : PlayerPrefs {
 
 #if CRYPTO
-	/// <summary>ハッシュ保存キー名称の生成</summary>
-	private static string hashPrefsKey (string key) => $"{key}!hash";
-
-	/// <summary>キーの存在確認</summary>
-	public static new bool HasKey (string key) => !string.IsNullOrEmpty (key) && PlayerPrefs.HasKey (key) && PlayerPrefs.HasKey (hashPrefsKey (key));
-
-	/// <summary>キーの削除</summary>
-	public static new void DeleteKey (string key) {
-		PlayerPrefs.DeleteKey (key);
-		PlayerPrefs.DeleteKey (hashPrefsKey (key));
-	}
-
+	/// <summary>文字列化したハッシュの長さ</summary>
+	private const int hashStrLength = 128 / 8 * 2;
+	
 	/// <summary>キーを受け取ってハッシュと照合済みの文字列を返す</summary>
 	private static string getStringWithHash (string key) {
-		var hkey = hashPrefsKey (key);
-		if (!HasKey (key)) {
-			throw new PlayerPrefsException ($"keys not found '{key}', '{hkey}'");
-		}
 		var cstr = PlayerPrefs.GetString (key);
-		var hash_saved = Hash128.Parse (PlayerPrefs.GetString (hkey));
-		var hash_computed = Hash128.Compute (cstr);
-		if (hash_saved.isValid && hash_saved == Hash128.Compute (cstr)) {
-			return cstr;
+		var dstr = cstr.Substring (hashStrLength);
+		var hash_saved = Hash128.Parse (cstr.Substring (0, hashStrLength));
+		var hash_computed = Hash128.Compute (dstr);
+		if (hash_saved.isValid && hash_saved == hash_computed) {
+			return dstr;
 		}
 		throw new PlayerPrefsException ($"hash mismatch saved:'{hash_saved}', computed:'{hash_computed}'");
 	}
 
 	/// <summary>キーと文字列を受け取って、ハッシュとともに保存する</summary>
 	private static void setStringWithHash (string key, string value) {
-		var hkey = hashPrefsKey (key);
-		PlayerPrefs.SetString (key, value);
-		PlayerPrefs.SetString (hashPrefsKey (key), Hash128.Compute (value).ToString ());
+		PlayerPrefs.SetString (key, $"{Hash128.Compute (value)}{value}");
 	}
 #endif
 
