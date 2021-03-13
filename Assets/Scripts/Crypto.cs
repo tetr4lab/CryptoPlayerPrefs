@@ -1,92 +1,151 @@
-﻿using System;
+﻿using UnityEngine;
+using System;
 using System.Text;
 using System.Security.Cryptography;
 
 /// <summary>
 /// BlockSize 128bit (16byte), KeySize 256bit (32byte), Mode CBC, Padding PKCS7
+///  エラー時は例外を投げる
 /// </summary>
 public static class Crypto {
 
-	private static AesCryptoServiceProvider Aes;
-	public static bool Inited { get { return Aes != null; } }
-	public static string strIV { get { return (Aes == null) ? null : Encoding.UTF8.GetString (Aes.IV); } }
-	public static string strKey { get { return (Aes == null) ? null : Encoding.UTF8.GetString (Aes.Key); } }
-	public static byte [] IV { get { return (Aes == null) ? null : Aes.IV; } }
-	public static byte [] Key { get { return (Aes == null) ? null : Aes.Key; } }
-	private static ICryptoTransform encryptor;
-	private static ICryptoTransform decryptor;
+	/// <summary>IVのバイト数</summary>
+	public static int IV_Length => Aes.BlockSize / 8;
+	/// <summary>Keyのバイト数</summary>
+	public static int Key_Length => Aes.KeySize / 8;
+	/// <summary>Base64文字列化したIVの文字数</summary>
+	public static int B64IV_Length => B64IV.Length;
+	/// <summary>Base64文字列化したKeyの文字数</summary>
+	public static int B64Key_Length => B64Key.Length;
 
-	public static bool Init (byte [] iv = null, byte [] key = null) {
-		if (Aes != null) {
-			Aes.Dispose ();
-			Aes = null;
-		}
-		using (var aes = new AesCryptoServiceProvider ()) {
-			Aes = aes;
-		}
-		if (Aes != null) {
-			if (iv != null) {
-				if (iv.Length * 8 != Aes.BlockSize) {
-					throw new ArgumentOutOfRangeException ("invalid size of iv");
-				}
-				Aes.IV = iv;
+	/// <summary>シングルトン</summary>
+	private static AesCryptoServiceProvider Aes = new AesCryptoServiceProvider ();
+
+	/// <summary>
+	/// Base64文字列化したIV
+	///  NULLを書き込むと自動生成
+	/// </summary>
+	public static string B64IV {
+		get => Convert.ToBase64String (Aes.IV);
+		set {
+			if (value == null) {
+				Aes.GenerateIV ();
+			} else if (value.Length == B64IV_Length) {
+				IV = Convert.FromBase64String (value);
+			} else {
+				throw new ArgumentOutOfRangeException ($"invalid size of iv {value.Length}: {value}");
 			}
-			if (key != null) {
-				if (key.Length * 8 != Aes.KeySize) {
-					throw new ArgumentOutOfRangeException ("invalid size of key");
-				}
-				Aes.Key = key;
+		}
+	}
+
+	/// <summary>
+	/// Base64文字列化したKey
+	///  NULLを書き込むと自動生成
+	/// </summary>
+	public static string B64Key {
+		get => Convert.ToBase64String (Aes.Key);
+		set {
+			if (value == null) {
+				Aes.GenerateKey ();
+			} else if (value.Length == B64Key_Length) {
+				Key = Convert.FromBase64String (value);
+			} else {
+				throw new ArgumentOutOfRangeException ($"invalid size of key {value.Length}: {value}");
 			}
-			if (encryptor != null) { encryptor.Dispose (); }
-			encryptor = Aes.CreateEncryptor ();
-			if (decryptor != null) { decryptor.Dispose (); }
-			decryptor = Aes.CreateDecryptor ();
-			return true;
-		}
-		return false;
-	}
-
-	public static void Init (string iv, string key) {
-		Init ((iv == null) ? null : Encoding.UTF8.GetBytes (iv), (key == null) ? null : Encoding.UTF8.GetBytes (key));
-	}
-
-	public static string Encrypt (string src) {
-		if (Aes == null || string.IsNullOrEmpty (src)) { return null; }
-		try {
-			var data = Encoding.UTF8.GetBytes (src);
-			return Convert.ToBase64String (encryptor.TransformFinalBlock (data, 0, data.Length));
-		} catch {
-			return null;
 		}
 	}
 
-	public static byte [] Encrypt (byte [] data) {
-		if (Aes == null || data == null) { return null; }
-		try {
+	/// <summary>
+	/// バイナリのIV
+	///  NULLを書き込むと自動生成
+	/// </summary>
+	public static byte [] IV {
+		get => Aes.IV;
+		set {
+			if (value == null) {
+				Aes.GenerateIV ();
+			} else {
+				if (value.Length != IV_Length) {
+					throw new ArgumentOutOfRangeException ($"invalid size of iv {value.Length}: {Convert.ToBase64String (value)}");
+				}
+				Aes.IV = value;
+			}
+		}
+	}
+
+	/// <summary>
+	/// バイナリのKey
+	///  NULLを書き込むと自動生成
+	/// </summary>
+	public static byte [] Key {
+		get => (Aes == null) ? null : Aes.Key;
+		set {
+			if (value == null) {
+				Aes.GenerateKey ();
+			} else {
+				if (value.Length != Key_Length) {
+					throw new ArgumentOutOfRangeException ($"invalid size of key {value.Length}: {Convert.ToBase64String (value)}");
+				}
+				Aes.Key = value;
+			}
+		}
+	}
+
+	/// <summary>Base64文字列による初期化</summary>
+	/// <param name="key">Base64文字列化されたkey (渡さなければ新規生成)</param>
+	/// <param name="iv">Base64文字列化されたiv (渡さなければ新規生成)</param>
+	/// <returns>Base64文字列化されたkey</returns>
+	public static string Init (string key, string iv = null) {
+		Init ((key == null) ? null : Convert.FromBase64String (key), (iv == null) ? null : Convert.FromBase64String (iv));
+		return B64Key;
+	}
+
+	/// <summary>バイナリによる初期化</summary>
+	/// <param name="key">バイナリのkey (渡さなければ新規生成)</param>
+	/// <param name="iv">バイナリのiv (渡さなければ新規生成)</param>
+	/// <returns>バイナリのkey</returns>
+	public static byte [] Init (byte [] key = null, byte [] iv = null) {
+		if (Aes != null) { Aes.Dispose (); }
+		Aes = new AesCryptoServiceProvider ();
+		(Key, IV) = (key, iv);
+		return Key;
+	}
+
+	/// <summary>UTF8文字列の暗号化</summary>
+	/// <param name="src">UTF8文字列</param>
+	/// <param name="iv">Base64文字列化されたiv (渡さなければ新規生成)</param>
+	/// <returns>Base64文字列化された暗号化データ</returns>
+	public static string Encrypt (string src, string iv = null) {
+		return Convert.ToBase64String (Encrypt (Encoding.UTF8.GetBytes (src), (iv == null) ? null : Convert.FromBase64String (iv)));
+	}
+
+	/// <summary>バイナリデータの暗号化</summary>
+	/// <param name="data">バイナリデータ</param>
+	/// <param name="iv">バイナリのiv (渡さなければ新規生成)</param>
+	/// <returns>暗号化されたバイナリデータ</returns>
+	public static byte [] Encrypt (byte [] data, byte [] iv = null) {
+		IV = iv;
+		using (var encryptor = Aes.CreateEncryptor ()) {
 			return encryptor.TransformFinalBlock (data, 0, data.Length);
 		}
-		catch {
-			return null;
-		}
 	}
 
-	public static string Decrypt (string src) {
-		if (Aes == null || string.IsNullOrEmpty (src)) { return null; }
-		try {
-			var data = Convert.FromBase64String (src);
-			return Encoding.UTF8.GetString (decryptor.TransformFinalBlock (data, 0, data.Length));
-		}
-		catch {
-			return null;
-		}
+	/// <summary>UTF8文字列の復号</summary>
+	/// <param name="src">Base64文字列化された暗号化データ</param>
+	/// <param name="iv">Base64文字列化されたiv (渡さなければ元のまま)</param>
+	/// <returns>UTF8文字列</returns>
+	public static string Decrypt (string src, string iv = null) {
+		return Encoding.UTF8.GetString (Decrypt (Convert.FromBase64String (src), (iv == null) ? null : Convert.FromBase64String (iv)));
 	}
 
-	public static byte [] Decrypt (byte [] data) {
-		if (Aes == null || data == null) { return null; }
-		try {
+	/// <summary>バイナリデータの復号</summary>
+	/// <param name="data">暗号化されたバイナリデータ</param>
+	/// <param name="iv">バイナリのiv (渡さなければ元のまま)</param>
+	/// <returns>復号されたバイナリデータ</returns>
+	public static byte [] Decrypt (byte [] data, byte [] iv = null) {
+		if (iv != null) { IV = iv; }
+		using (var decryptor = Aes.CreateDecryptor ()) {
 			return decryptor.TransformFinalBlock (data, 0, data.Length);
-		} catch {
-			return null;
 		}
 	}
 

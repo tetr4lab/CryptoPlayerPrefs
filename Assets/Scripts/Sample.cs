@@ -1,34 +1,31 @@
-﻿#define INIT_CRYPTO
-
-using System;
+﻿using System;
+using System.Text;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+/// <summary>暗号化と復号の実施例</summary>
 public class Sample : MonoBehaviour {
 
-	int Number;
-	float Value;
-	string Name;
-	ItemDict Items;
-
+	/// <summary>初期実行</summary>
 	void Start () {
 
-#if INIT_CRYPTO
-		Crypto.Init ("#:CP$-/Tk:d5-exf", "H:CNA+3ZaLLUJwpPcHC@2dV3XfhrUGN-");
-#endif
-		// ロード
-		Number = CryptoPlayerPrefs.GetInt ("Number");
-		Value = CryptoPlayerPrefs.GetFloat ("Value");
-		Name = CryptoPlayerPrefs.GetString ("Name");
-		Items = CryptoPlayerPrefs.GetObject<ItemDict> ("Items");
-		Debug.Log ($"loaded... Number = {Number}, Value = {Value}, Name = {Name}, Items = {Items}");
-		
 		// 初期化
-		Number = 4096;
-		Value = 1.41421356f;
-		Name = "tetr4lab.";
-		Items = new ItemDict (new string [] { "a", "b", "c", "d", "e", "f" }); // 生成
+#if False
+		// キーを任意に定める場合
+		var Key = new byte [32]; // キーは32バイト
+		(new System.Random ()).NextBytes (Key); // 乱数で埋める (例)
+		Crypto.Init (Key);
+#else
+		// キーを自動生成する場合
+		var Key = Crypto.Init ();
+#endif
+
+		// セーブ用データ
+		var Number = 4096;
+		var Value = 1.41421356f;
+		var Name = "tetr4lab.";
+		var Items = new ItemDict (new string [] { "a", "b", "c", "d", "e", "f" }); // 生成
 
 		// セーブ
 		CryptoPlayerPrefs.SetInt ("Number", Number);
@@ -36,10 +33,22 @@ public class Sample : MonoBehaviour {
 		CryptoPlayerPrefs.SetString ("Name", Name);
 		CryptoPlayerPrefs.SetObject<ItemDict> ("Items", Items);
 		Debug.Log ($"saved... Number = {Number}, Value = {Value}, Name = {Name}, Items = {Items}");
+
+		// ここでアプリが終了し、次回起動後に再初期化されたものとする
+		Crypto.Init (Key);
+
+		// ロード
+		Number = CryptoPlayerPrefs.GetInt ("Number");
+		Value = CryptoPlayerPrefs.GetFloat ("Value");
+		Name = CryptoPlayerPrefs.GetString ("Name");
+		Items = CryptoPlayerPrefs.GetObject<ItemDict> ("Items");
+		Debug.Log ($"loaded... Number = {Number}, Value = {Value}, Name = {Name}, Items = {Items}");
+
 	}
 
 }
 
+// オブジェクト保存のテスト用クラス
 [Serializable]
 public class ItemDict {
 	public int this [Item i] { get { return Items [i]; } }
